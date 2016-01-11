@@ -17,13 +17,17 @@ import javax.persistence.Query;
  * @author chris
  */
 @Stateful
-public class UtilisateurSession implements UtilisateurSessionLocal {
+public class UtilisateurSession extends AbstractFacade<Utilisateur> implements UtilisateurSessionLocal {
     
     private String login ;
     private boolean admin ;
        
     @PersistenceContext(unitName = "DVD-ejbPU")
     private EntityManager em;
+    
+    public UtilisateurSession(){
+        super(Utilisateur.class);
+    }
     
     public void init(){
         Query q = em.createNamedQuery("programmeur.find") ;
@@ -60,6 +64,24 @@ public class UtilisateurSession implements UtilisateurSessionLocal {
 
     public void persist(Object object) {
         em.persist(object);
+    }
+
+    @Override
+    protected EntityManager getEntityManager() {
+        return em ;
+    }
+
+    @Override
+    public Utilisateur findByLogin(String login) {
+        
+        Query q = em.createNamedQuery("utilisateur.find") ;
+        q.setParameter("login",login);
+        try{
+           Utilisateur user = (Utilisateur) q.getSingleResult() ;
+           return user ;
+        } catch (NoResultException e){
+            return null ;
+        }       
     }
 
     

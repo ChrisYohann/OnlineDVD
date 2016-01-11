@@ -11,6 +11,8 @@ import ejb.DVDManagerLocal;
 import ejb.DVDStock;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -22,6 +24,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author chris
  */
 public class DVDAddServlet extends HttpServlet {
+    
+    public final static String VUE = "/index.jsp";
 
     @EJB
     private DVDManagerLocal dvdManager;
@@ -36,55 +40,46 @@ public class DVDAddServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet DVDAddServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet DVDAddServlet at " + request.getContextPath() + "</h1>");
-            
+            throws ServletException, IOException {        
             String dvdTitle,author,director,summary ;
-             int instock ;
-        
+             int instock,numberprovider ;
+             
+             
              dvdTitle = request.getParameter("dvdTitle");
              author = request.getParameter("dvdauthor");
              director = request.getParameter("director");
              summary = request.getParameter("summary");
              
              try{
-                 instock = Integer.parseInt(request.getParameter("instock"));
+                 numberprovider = Integer.parseInt(request.getParameter("providernumber"));
              } catch (NumberFormatException e){
-                 instock = 0 ;
+                 numberprovider = 1 ;
              }
-             
-        
+                    
              DVD dvd_bean = new DVD();
-             DVDStock stock = new DVDStock();
+             List<DVDStock> stocks = new ArrayList<DVDStock>();
              
-             stock.setStock(new Long(instock));
-             stock.setStock(dvd_bean.getId());
-        
              dvd_bean.setName(dvdTitle);
              dvd_bean.setAuthor(author);
              dvd_bean.setDirector(director);
              dvd_bean.setDescription(summary);
-             dvd_bean.setStock(stock) ;
              
-             dvdManager.addDVD(dvd_bean);
+             for(int i = 0 ; i < numberprovider ; i++ ){
+                 DVDStock stock = new DVDStock();
+                 int en_stock = Integer.parseInt(request.getParameter("fournisseur"+i+"count"));
+                 String name_fournisseur = request.getParameter("fournisseur"+i+"name");
+                 
+                 stock.setNameFournisseur(name_fournisseur);
+                 stock.setQuantity(new Long(en_stock));
+                 stock.setDVD(dvd_bean);             
+                 stocks.add(stock);
+             }           
              
-            
-            out.println("</body>");
-            out.println("</html>");
+            dvdManager.addDVD(dvd_bean, stocks);
+            System.out.println("DVD avalaibles :"+dvdManager.getAvailable(dvd_bean));
+            request.getServletContext().getRequestDispatcher("VUE").forward(request, response);
         }
              
-       
-        
-    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

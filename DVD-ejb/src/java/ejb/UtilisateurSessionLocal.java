@@ -20,4 +20,6 @@ public interface UtilisateurSessionLocal {
     
     public boolean isAdmin();
     
+    public Utilisateur findByLogin(String login);
+    
 }

@@ -1,0 +1,62 @@
+CREATE TABLE `utilisateur` (
+  `login` varchar(45) NOT NULL,
+  `nomUt` varchar(45) DEFAULT NULL,
+  `prenomUt` varchar(45) DEFAULT NULL,
+  `adresseUt` varchar(60) DEFAULT NULL,
+  `passwordUt` varchar(45) NOT NULL,
+  PRIMARY KEY (`login`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `programmeur` (
+  `login` varchar(45) NOT NULL,
+  `nomUt` varchar(45) DEFAULT NULL,
+  `prenomUt` varchar(45) DEFAULT NULL,
+  `adresseUt` varchar(60) DEFAULT NULL,
+  `passwordUt` varchar(45) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `DVD` (
+  `idDVD` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `author` varchar(45) NOT NULL,
+  `director` varchar(45) NOT NULL,
+  `description` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`idDVD`)
+) ENGINE=InnoDB AUTO_INCREMENT=752 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `DVDStock` (
+  `idDVDStock` int(11) NOT NULL AUTO_INCREMENT,
+  `quantity` int(11) DEFAULT NULL,
+  `idDVD` int(11) DEFAULT NULL,
+  `nameFournisseur` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`idDVDStock`),
+  KEY `fk_DVDStock_1_idx` (`idDVD`),
+  CONSTRAINT `fk_DVDStock_1` FOREIGN KEY (`idDVD`) REFERENCES `DVD` (`idDVD`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=753 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `Commande` (
+  `idCommande` int(11) NOT NULL AUTO_INCREMENT,
+  `login` varchar(45) DEFAULT NULL,
+  `idDVD` int(11) DEFAULT NULL,
+  `etat` varchar(45) NOT NULL,
+  PRIMARY KEY (`idCommande`),
+  KEY `fk_new_table_1_idx` (`login`),
+  KEY `fk_new_table_2_idx` (`idDVD`),
+  CONSTRAINT `fk_new_table_1` FOREIGN KEY (`login`) REFERENCES `utilisateur` (`login`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_new_table_2` FOREIGN KEY (`idDVD`) REFERENCES `DVD` (`idDVD`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=755 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `Message` (
+  `idMessage` int(11) NOT NULL AUTO_INCREMENT,
+  `type` int(11) NOT NULL,
+  `idDVD` int(11) NOT NULL,
+  `login` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`idMessage`),
+  KEY `fk_Message_1_idx` (`idDVD`),
+  KEY `fk_Message_2_idx` (`login`),
+  CONSTRAINT `fk_Message_1` FOREIGN KEY (`idDVD`) REFERENCES `DVD` (`idDVD`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Message_2` FOREIGN KEY (`login`) REFERENCES `utilisateur` (`login`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+

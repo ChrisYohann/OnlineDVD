@@ -5,6 +5,7 @@
  */
 package ejb;
 
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -14,6 +15,10 @@ import javax.ejb.Local;
 @Local
 public interface DVDManagerLocal {
     
-     public void addDVD(DVD bean);
+     public void addDVD(DVD bean,List<DVDStock> stocks);
+     
+     public List<DVD> showAll();
+     
+     public Long getAvailable(DVD bean);
     
 }

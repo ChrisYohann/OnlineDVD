@@ -6,13 +6,14 @@
 package ejb;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 /**
@@ -39,9 +40,9 @@ public class DVD implements Serializable {
     
     private String description ;
     
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn(name = "idDVD",referencedColumnName = "idDVD")
-    private DVDStock stock ;
+    private List<DVDStock> stocks ;
 
     public Long getId() {
         return id;
@@ -83,12 +84,12 @@ public class DVD implements Serializable {
         this.description = description;
     }
     
-    public void setStock(DVDStock stock) {
-        this.stock = stock ;
+    public void setStocks(List<DVDStock> stocks) {
+        this.stocks = stocks ;
     }
     
-    public Long getStock(){
-        return stock.getStock();
+    public List<DVDStock> getStocks(){
+        return stocks ;
     }
 
     @Override
